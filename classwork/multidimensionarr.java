@@ -40,10 +40,7 @@ for(int k=0;k<x;k++){
     rs+=ab[k][x-k-1];
 }
 System.out.println( Math.abs(ls-rs));
-}}
-
-// return border elements appended into new array
-
+}
 public static int[] border(int[][] arr){
     int m=arr.length;
     int n=arr[0].length;
@@ -66,4 +63,4 @@ public static int[] border(int[][] arr){
     }
 
     return b;
-}
+}}
