@@ -77,6 +77,7 @@ public class day11_inheritance {
         System.out.println("-----------------------------------");
         
         // Creating student object
-        Student y1 = new Student("tanish", 77, 19);
+        // Student y1 = new Student("tanish", 77, 19);
+
     }
 }

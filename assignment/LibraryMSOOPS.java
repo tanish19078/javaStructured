@@ -165,7 +165,7 @@ public class LibraryMSOOPS {
     }
 
     static void demo() {
-        Book b1 = new Book();
+        // Book b1 = new Book();
         Book b2 = new Book(1, "Java", "Gosling", 500, 10);
         Book b3 = new Book(b2);
         b3.displayDetails();
