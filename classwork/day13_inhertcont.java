@@ -13,7 +13,7 @@ abstract class Person {
         System.out.println("ID: " + this.id);
     }
     
-    abstract void takeattendance() {
+    void takeattendance() {
         takeattendance++;
         System.out.println("Attendance taken! Total: " + takeattendance);
     }
@@ -38,6 +38,11 @@ class Teacher extends Person {
         System.out.println("Phone: " + this.phone);
         System.out.println("Attendance: " + takeattendance);
     }
+
+    @Override
+    void takeattendance() {
+        throw new UnsupportedOperationException("Unimplemented method 'takeattendance'");
+    }
 }
 
 class Student extends Person {
@@ -58,6 +63,8 @@ class Student extends Person {
         System.out.println("Roll No: " + this.rollno);
         System.out.println("Attendance: " + takeattendance);
     }
+
+
 }
 
 public class day13_inhertcont {
