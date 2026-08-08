@@ -116,7 +116,7 @@ public class Recursionpractice {
     }
     
     public static void main(String[] args) {
-        Recursion r = new Recursion();
+        Recursionpractice r = new Recursionpractice();
         
         System.out.print("1: "); r.p1(5); System.out.println();
         System.out.print("2: "); r.p2(5); System.out.println();
