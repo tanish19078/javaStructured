@@ -1379,7 +1379,7 @@ StringBuilder sb3 = new StringBuilder(50);        // capacity 50, length 0
 | `substring(int s[, int e])` | Returns a **`String`** (not a StringBuilder) | `sb.substring(0,2)` → `"He"` |
 | `length()` | Character count | `5` |
 | `capacity()` | Buffer size | `21` |
-| `setLength(int n)` | Truncates, or pads with `' '` | `sb.setLength(3)` → `"Hel"` |
+| `setLength(int n)` | Truncates, or pads with `'\0'` | `sb.setLength(3)` → `"Hel"` |
 | `ensureCapacity(int n)` | Grows the buffer if needed | — |
 | `toString()` | Converts to an immutable `String` | `"Hello"` |
 
