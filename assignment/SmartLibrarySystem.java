@@ -3,16 +3,39 @@ import java.util.Scanner;
 public class SmartLibrarySystem {
     private final Scanner sc = new Scanner(System.in);
     private final Library lib = new Library();
+    private String user;
 
     public static void main(String[] args) {
         new SmartLibrarySystem().runMenu();
     }
 
     private void runMenu() {
+        selectUser();
+
+        if ("Librarian".equals(user)) {
+            runLibrarianMenu();
+        } else {
+            runStudentMenu();
+        }
+
+        sc.close();
+    }
+
+    private void selectUser() {
+        System.out.println("========== SMART LIBRARY SYSTEM ==========");
+        System.out.println("1. Student");
+        System.out.println("2. Librarian");
+
+        int choice = readInt("Choose user type: ", 1, 2);
+        user = choice == 1 ? "Student" : "Librarian";
+        System.out.println("Logged in as: " + user);
+    }
+
+    private void runLibrarianMenu() {
         boolean run = true;
 
         while (run) {
-            showMenu();
+            showLibrarianMenu();
             int op = readInt("Choose an option: ", 1, 11);
 
             switch (op) {
@@ -54,12 +77,43 @@ public class SmartLibrarySystem {
                     break;
             }
         }
-
-        sc.close();
     }
 
-    private void showMenu() {
-        System.out.println("\n========== SMART LIBRARY SYSTEM ==========");
+    private void runStudentMenu() {
+        boolean run = true;
+
+        while (run) {
+            showStudentMenu();
+            int op = readInt("Choose an option: ", 1, 6);
+
+            switch (op) {
+                case 1:
+                    lib.displayAllBooks();
+                    break;
+                case 2:
+                    searchBook();
+                    break;
+                case 3:
+                    issueBook();
+                    break;
+                case 4:
+                    returnBook();
+                    break;
+                case 5:
+                    lib.displayAvailableBooks();
+                    break;
+                case 6:
+                    run = false;
+                    System.out.println("Thank you for using the library system.");
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void showLibrarianMenu() {
+        System.out.println("\n========== LIBRARIAN MENU ==========");
         System.out.println("1. Add Book");
         System.out.println("2. Display All Books");
         System.out.println("3. Search Book");
@@ -71,6 +125,16 @@ public class SmartLibrarySystem {
         System.out.println("9. Display Issued Books");
         System.out.println("10. Display Library Statistics");
         System.out.println("11. Exit");
+    }
+
+    private void showStudentMenu() {
+        System.out.println("\n========== STUDENT MENU ==========");
+        System.out.println("1. Display All Books");
+        System.out.println("2. Search Book");
+        System.out.println("3. Issue Book");
+        System.out.println("4. Return Book");
+        System.out.println("5. Display Available Books");
+        System.out.println("6. Exit");
     }
 
     private void addBook() {
@@ -481,171 +545,6 @@ public class SmartLibrarySystem {
                 System.out.println("No books to display.");
             }
         }
-    }
-
-    static abstract class Book {
-        private String id;
-        private String ti;
-        private String au;
-        private String pu;
-        private String is;
-        private String ca;
-        private double pr;
-        private int pg;
-        private int yr;
-        private boolean av;
-
-        public Book() {
-            this("", "", "", "", "", "", 0, 1, 1, true);
-        }
-
-        public Book(String id, String ti, String au, String pu, String is, String ca, double pr, int pg, int yr, boolean av) {
-            this.id = id;
-            this.ti = ti;
-            this.au = au;
-            this.pu = pu;
-            this.is = is;
-            this.ca = ca;
-            this.pr = pr;
-            this.pg = pg;
-            this.yr = yr;
-            this.av = av;
-        }
-
-        public static boolean isValidPrice(double pr) {
-            return pr >= 0;
-        }
-
-        public static boolean isValidPages(int pg) {
-            return pg > 0;
-        }
-
-        public String getBookId() {
-            return id;
-        }
-
-        public String getTitle() {
-            return ti;
-        }
-
-        public String getAuthor() {
-            return au;
-        }
-
-        public String getPublisher() {
-            return pu;
-        }
-
-        public String getIsbn() {
-            return is;
-        }
-
-        public String getCategory() {
-            return ca;
-        }
-
-        public double getPrice() {
-            return pr;
-        }
-
-        public int getPages() {
-            return pg;
-        }
-
-        public int getYear() {
-            return yr;
-        }
-
-        public boolean isAvailable() {
-            return av;
-        }
-
-        public void setTitle(String ti) {
-            this.ti = ti;
-        }
-
-        public void setAuthor(String au) {
-            this.au = au;
-        }
-
-        public void setPublisher(String pu) {
-            this.pu = pu;
-        }
-
-        public void setIsbn(String is) {
-            this.is = is;
-        }
-
-        public void setCategory(String ca) {
-            this.ca = ca;
-        }
-
-        public void setPrice(double pr) {
-            if (isValidPrice(pr)) {
-                this.pr = pr;
-            }
-        }
-
-        public void setPages(int pg) {
-            if (isValidPages(pg)) {
-                this.pg = pg;
-            }
-        }
-
-        public void setYear(int yr) {
-            if (yr > 0) {
-                this.yr = yr;
-            }
-        }
-
-        public void setAvailable(boolean av) {
-            this.av = av;
-        }
-
-        public boolean issueBook() {
-            if (!av) {
-                return false;
-            }
-            av = false;
-            return true;
-        }
-
-        public boolean returnBook() {
-            if (av) {
-                return false;
-            }
-            av = true;
-            return true;
-        }
-
-        public void displayDetails(boolean full) {
-            if (full) {
-                displayDetails();
-            } else {
-                System.out.println(id + " | " + ti + " | " + au + " | " + getType() + " | " + getStatus());
-            }
-        }
-
-        protected void displayCommonDetails() {
-            System.out.println("Book ID: " + id);
-            System.out.println("Title: " + ti);
-            System.out.println("Author: " + au);
-            System.out.println("Publisher: " + pu);
-            System.out.println("ISBN: " + is);
-            System.out.println("Category: " + ca);
-            System.out.printf("Price: %.2f%n", pr);
-            System.out.println("Pages: " + pg);
-            System.out.println("Publication Year: " + yr);
-            System.out.println("Availability: " + getStatus());
-        }
-
-        protected String getStatus() {
-            return av ? "Available" : "Issued";
-        }
-
-        public abstract String getType();
-
-        public abstract void displayDetails();
     }
 
     static class PrintedBook extends Book {
