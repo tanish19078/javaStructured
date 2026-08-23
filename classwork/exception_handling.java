@@ -85,11 +85,12 @@ public class exception_handling {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter password: ");
         String password = sc.nextLine();
-        
+        sc.close();
         // Check password
         if (!password.equals("1234")) {
             try {
                 throw new PasswordIncorrectException("Password is incorrect!");
+                
             } catch (PasswordIncorrectException e) {
                 System.out.println("Exception caught: " + e.getMessage());
             }

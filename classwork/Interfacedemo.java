@@ -24,7 +24,7 @@ class CSEtudent implements Interfacedemo {
 
 }
 
-public class InterfaceDemo {
+class InterfaceDemo {
     public static void main(String[] args) {
         Interfacedemo.clgName();
         
