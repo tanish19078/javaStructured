@@ -31,6 +31,7 @@ public class Main{
     public static void main(String[] args){
 Scanner sc=new Scanner(System.in);
 int choice=sc.nextInt();
+sc.close();
 Vehicle v;
 if(choice==1){
      v=new Car();}
@@ -65,7 +66,7 @@ if(choice==1){
 
 class Employee{
     double salary;
-    private int id;
+     int id;
     Employee(double salary, int id){
         this.salary=salary;
         this.id=id;
