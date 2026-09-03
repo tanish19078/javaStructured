@@ -42,7 +42,7 @@ public class Test {
     public static void main(String[] args) throws Exception {
         Stack<Object> stack1 = new Stack<>(5);
         Stack<Object> stack2 = new Stack<>(5);
-        Student student = new Student("John", 101);
+        Studentserialisation student = new Studentserialisation("John", 101);
         stack1.push(student);
         stack1.push(new Integer(10));
         stack2.push(new Float(20));

@@ -5,10 +5,8 @@ public class ArrayListProblems {
     
     static ArrayList<Integer> removeDuplicates(ArrayList<Integer> list) {
         ArrayList<Integer> result = new ArrayList<>();
-        HashSet<Integer> seen = new HashSet<>();
         for (Integer num : list) {
-            if (!seen.contains(num)) {
-                seen.add(num);
+            if (!result.contains(num)) {
                 result.add(num);
             }
         }
