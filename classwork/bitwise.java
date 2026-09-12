@@ -1,4 +1,4 @@
-public class day12_bitwise {
+public class bitwise {
 
             //6. print full binary number
         public static int binary(int n){

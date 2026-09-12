@@ -1,4 +1,4 @@
-public class day3_teacher {
+public class teacher {
     int id;
     String name;
     String email;

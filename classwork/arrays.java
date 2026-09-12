@@ -5,7 +5,7 @@ class Student{
 }
 
 
-public class day6_arrays{
+public class arrays{
     public static void main(String[] args){
     // int []arr=new int[5];
     // int[] a1,a2;

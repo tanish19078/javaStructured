@@ -1,4 +1,4 @@
-public class day3_student{
+public class student{
     int marks;
     String name;
     String phone;

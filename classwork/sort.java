@@ -16,7 +16,7 @@ class ucampusclient{
         }
     }
 
-public class day7_sort {
+public class sort {
     int sort(){
         int[] a={0,1,2,2,1,0,2,2,1,1};
         int l=0;

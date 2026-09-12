@@ -1,4 +1,4 @@
-public class day2_ops {
+public class ops {
     public static void main(String[] args){
         //operators
         // arithmetic operators are binary

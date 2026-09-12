@@ -5,7 +5,7 @@
     // - primitive data types and reference data types
     // static variables - declared with the static keyword and belong to the class rather than any specific instance 
     // - types of static variables - primitive data types and reference data types
-public class day5_vars {
+public class vars {
     public static void main(String[] args) {
         // arrays
         int[] stud=new int[5];System.out.println(stud);

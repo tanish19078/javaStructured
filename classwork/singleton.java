@@ -135,7 +135,7 @@ class Fiction extends Book {
     }
 }
 
-public class day16_singleton{
+public class singleton{
     public static void main(String[] args){
         Scanner sc = new Scanner(System.in);
         Library library = Library.getInstance();

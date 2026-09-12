@@ -58,7 +58,7 @@ class Student {
     }
 }
 
-public class day11_inheritance {
+public class inheritance {
     public static void main(String[] args) {
         // Creating parent object
         X a = new X("Parent Asset", 50, 999);

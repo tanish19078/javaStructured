@@ -10,7 +10,7 @@ class Person{
 Person(int age,int marks){
     System.out.println("parameterised constructor");
 }}
-public class day10_constructor{
+public class constructor{
     public static void main(String[] args){
         Person p=new Person();
         Person px=new Person(20, 75);

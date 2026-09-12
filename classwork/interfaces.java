@@ -92,7 +92,7 @@ class LinkedList implements List {
 
 
 
-public class day15_interface {
+public class interfaces {
     public static void main(String[] args) {
         Student s1 = new BtechStudent("Rahul", 85, 78.5);
    
