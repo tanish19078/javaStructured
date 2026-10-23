@@ -4,6 +4,10 @@
 
 ## How to use
 
+Map iteration uses `for (var e : freq.entrySet())`. `var` requires Java 10 or newer; for older Java, use `Map.Entry<Character, Integer> e` (or `Map.Entry<Integer, Integer> e` for ages). Counting loops still scan the input, and first-unique solutions scan the original string to preserve order.
+
+Several questions also include a **basic alternative** or **built-in alternative**. These show loops, ASCII logic, string methods, or sorting alongside the original solution. Choose one version when practising; do not paste both methods with the same signature into one class.
+
 - Practise one question at a time. Repeated class names in different questions are independent; do not combine all snippets into one file.
 - For method-only snippets, put the method inside `class Solution { ... }` unless your provided template specifies another class. Keep the template's exact method name, return type and `static` modifier when submitting. Some revision helper names are descriptive where the statement does not prescribe a name.
 - Add `import java.util.*;` above a snippet when needed. Methods return answers unless the question explicitly asks them to print. OOP snippets define the requested classes; no `main` is needed.
@@ -203,11 +207,14 @@ public List<Integer> boundaryTraversal(int[][] matrix) {
 
 **Question:** Return the string with all characters reversed, including spaces and punctuation.
 
-**Solution idea:** Use StringBuilder.reverse(). O(n) time and space.
+**Solution idea:** Use an empty result string and append characters from right to left. Repeated concatenation can take O(n²) time.
 
 ```java
 public String reverseString(String s) {
-    return new StringBuilder(s).reverse().toString();
+    String ans = "";
+    for (int i = s.length() - 1; i >= 0; i--)
+        ans += s.charAt(i);
+    return ans;
 }
 ```
 
@@ -252,17 +259,34 @@ public int[] countVowelsConsonants(String s) {
 
 **Question:** Change uppercase letters to lowercase and lowercase to uppercase. Keep other characters unchanged.
 
-**Solution idea:** Build a result using Character case methods. O(n) time and space.
+**Solution idea:** Start with an empty string. Change each letter’s case and append it using +=. Repeated concatenation can take O(n²) time.
 
 ```java
 public String toggleCase(String s) {
-    StringBuilder ans = new StringBuilder();
+    String ans = "";
     for (char c : s.toCharArray()) {
-        if (Character.isUpperCase(c)) ans.append(Character.toLowerCase(c));
-        else if (Character.isLowerCase(c)) ans.append(Character.toUpperCase(c));
-        else ans.append(c);
+        if (Character.isUpperCase(c)) ans += Character.toLowerCase(c);
+        else if (Character.isLowerCase(c)) ans += Character.toUpperCase(c);
+        else ans += c;
     }
-    return ans.toString();
+    return ans;
+}
+```
+
+**Basic alternative — ASCII comparisons**
+
+For English letters, lowercase and uppercase differ by 32. Check the range before changing the character; leave other characters alone. The simple result-string concatenation can take O(n²) time.
+
+```java
+public String toggleCase(String s) {
+    String ans = "";
+    for (int i = 0; i < s.length(); i++) {
+        char c = s.charAt(i);
+        if (c >= 'A' && c <= 'Z') c = (char)(c + 32);
+        else if (c >= 'a' && c <= 'z') c = (char)(c - 32);
+        ans += c;
+    }
+    return ans;
 }
 ```
 
@@ -270,17 +294,40 @@ public String toggleCase(String s) {
 
 **Question:** Count only lowercase a–z. Ignore uppercase and other characters. Return alphabetical letterCount groups separated by one space; skip absent letters.
 
-**Solution idea:** Use 26 counters. Example: banana → a3 b1 n2. O(n) time.
+**Solution idea:** Count in a TreeMap, then iterate with entrySet(). TreeMap keeps letters alphabetical. Start with an empty string and append each letter/count pair. O(n log k) time for k distinct lowercase letters (at most 26).
 
 ```java
 public String charFrequency(String s) {
-    int[] freq = new int[26];
-    for (char c : s.toCharArray())
-        if (c >= 'a' && c <= 'z') freq[c - 'a']++;
-    StringJoiner ans = new StringJoiner(" ");
-    for (int i = 0; i < 26; i++)
-        if (freq[i] > 0) ans.add("" + (char)('a' + i) + freq[i]);
-    return ans.toString();
+    TreeMap<Character, Integer> freq = new TreeMap<>();
+    for (char c : s.toCharArray()) {
+        if (c >= 'a' && c <= 'z')
+            freq.put(c, freq.getOrDefault(c, 0) + 1);
+    }
+    String res = "";
+    for (var e : freq.entrySet()) {
+        res += "" + e.getKey() + e.getValue() + " ";
+    }
+    return res.trim();
+}
+```
+
+**Basic alternative — count each letter with loops**
+
+For each letter a–z, scan the string and count matches. This automatically gives alphabetical output and ignores uppercase/symbols. O(26n) scanning time; no map or frequency array.
+
+```java
+public String charFrequency(String s) {
+    String ans = "";
+    for (char letter = 'a'; letter <= 'z'; letter++) {
+        int count = 0;
+        for (int i = 0; i < s.length(); i++)
+            if (s.charAt(i) == letter) count++;
+        if (count > 0) {
+            if (!ans.isEmpty()) ans += " ";
+            ans += "" + letter + count;
+        }
+    }
+    return ans;
 }
 ```
 
@@ -288,15 +335,35 @@ public String charFrequency(String s) {
 
 **Question:** For two lowercase strings, return true if every letter has the same frequency in both.
 
-**Solution idea:** Increment for s and decrement for t; every counter must finish at zero. O(n+m) time.
+**Solution idea:** Sort both character arrays and compare them with Arrays.equals(), exactly as in your approach. O(n log n + m log m) time; O(n+m) array space. Add `import java.util.Arrays;` above the class.
+
+```java
+class Solution {
+    public boolean areAnagrams(String s, String t) {
+        char[] x = s.toCharArray();
+        char[] y = t.toCharArray();
+        Arrays.sort(x);
+        Arrays.sort(y);
+        return Arrays.equals(x, y);
+    }
+}
+```
+
+**HashMap alternative**
+
+Use a HashMap: increment for s, decrement for t, then check that all counts are zero. Expected O(n+m) time.
 
 ```java
 public boolean areAnagrams(String s, String t) {
     if (s.length() != t.length()) return false;
-    int[] freq = new int[26];
-    for (char c : s.toCharArray()) freq[c - 'a']++;
-    for (char c : t.toCharArray()) freq[c - 'a']--;
-    for (int count : freq) if (count != 0) return false;
+    HashMap<Character, Integer> freq = new HashMap<>();
+    for (char c : s.toCharArray())
+        freq.put(c, freq.getOrDefault(c, 0) + 1);
+    for (char c : t.toCharArray())
+        freq.put(c, freq.getOrDefault(c, 0) - 1);
+    for (var e : freq.entrySet()) {
+        if (e.getValue() != 0) return false;
+    }
     return true;
 }
 ```
@@ -305,13 +372,29 @@ public boolean areAnagrams(String s, String t) {
 
 **Question:** Return the first lowercase character occurring exactly once; return # if none exists or the string is empty.
 
-**Solution idea:** Count first, then scan in original order. O(n) time.
+**Solution idea:** Count in a HashMap, then scan the string in its original order. Expected O(n) time.
 
 ```java
 public char firstNonRepeatingChar(String s) {
-    int[] freq = new int[26];
-    for (char c : s.toCharArray()) freq[c - 'a']++;
-    for (char c : s.toCharArray()) if (freq[c - 'a'] == 1) return c;
+    HashMap<Character, Integer> freq = new HashMap<>();
+    for (char c : s.toCharArray())
+        freq.put(c, freq.getOrDefault(c, 0) + 1);
+    for (char c : s.toCharArray())
+        if (freq.get(c) == 1) return c;
+    return '#';
+}
+```
+
+**Built-in alternative — indexOf and lastIndexOf**
+
+A character occurs exactly once when its first and last positions are equal. Scan left to right to find the first such character. Easy for small practice inputs; worst-case O(n²), so use the HashMap solution for larger inputs.
+
+```java
+public char firstNonRepeatingChar(String s) {
+    for (int i = 0; i < s.length(); i++) {
+        char c = s.charAt(i);
+        if (s.indexOf(c) == s.lastIndexOf(c)) return c;
+    }
     return '#';
 }
 ```
@@ -320,16 +403,37 @@ public char firstNonRepeatingChar(String s) {
 
 **Question:** Reverse word order without reversing characters inside words. Collapse repeated spaces and remove leading/trailing spaces.
 
-**Solution idea:** Trim, split on one or more whitespace characters, then join backwards. O(n) time and space.
+**Solution idea:** Trim, split on one or more whitespace characters, and append words backwards to an empty string. Repeated concatenation can take O(n²) time.
 
 ```java
 public String reverseWords(String s) {
     s = s.trim();
     if (s.isEmpty()) return "";
     String[] words = s.split("\\s+");
-    StringJoiner ans = new StringJoiner(" ");
-    for (int i = words.length - 1; i >= 0; i--) ans.add(words[i]);
-    return ans.toString();
+    String ans = "";
+    for (int i = words.length - 1; i >= 0; i--) {
+        if (!ans.isEmpty()) ans += " ";
+        ans += words[i];
+    }
+    return ans;
+}
+```
+
+**Basic alternative — split and a backward loop**
+
+trim() removes outer spaces; split(" +") handles repeated spaces. Append the words from right to left. Repeated concatenation can take O(n²) time.
+
+```java
+public String reverseWords(String s) {
+    s = s.trim();
+    if (s.isEmpty()) return "";
+    String[] words = s.split(" +");
+    String ans = "";
+    for (int i = words.length - 1; i >= 0; i--) {
+        if (!ans.isEmpty()) ans += " ";
+        ans += words[i];
+    }
+    return ans;
 }
 ```
 
@@ -384,15 +488,34 @@ public int compress(char[] chars) {
 
 **Question:** Return the zero-based INDEX of the first lowercase letter occurring once, or -1. Length can be 100000.
 
-**Solution idea:** Use the same two scans as the character-returning variant, but return the index. O(n) time.
+**Solution idea:** Count with a HashMap, then scan indices from left to right and return the first with count 1. Expected O(n) time.
 
 ```java
 public int firstUniqChar(String str) {
-    int[] freq = new int[26];
-    for (char c : str.toCharArray()) freq[c - 'a']++;
+    HashMap<Character, Integer> freq = new HashMap<>();
+    for (char c : str.toCharArray())
+        freq.put(c, freq.getOrDefault(c, 0) + 1);
     for (int i = 0; i < str.length(); i++)
-        if (freq[str.charAt(i) - 'a'] == 1) return i;
+        if (freq.get(str.charAt(i)) == 1) return i;
     return -1;
+}
+```
+
+**Built-in alternative — check a–z**
+
+For each lowercase letter, find its first and last positions. If they match and are not -1, it is unique. Keep the smallest index among all unique letters. O(26n) time and O(1) extra space; suitable for the given lowercase constraint.
+
+```java
+public int firstUniqChar(String str) {
+    int answer = -1;
+    for (char c = 'a'; c <= 'z'; c++) {
+        int first = str.indexOf(c);
+        int last = str.lastIndexOf(c);
+        if (first != -1 && first == last) {
+            if (answer == -1 || first < answer) answer = first;
+        }
+    }
+    return answer;
 }
 ```
 
@@ -400,16 +523,35 @@ public int firstUniqChar(String str) {
 
 **Question:** Strings may contain any ASCII character. Return 1 if their character frequencies match, otherwise 0. Comparison is case-sensitive.
 
-**Solution idea:** Use 128 ASCII counters rather than 26 lowercase counters. O(n+m) time.
+**Solution idea:** Use a HashMap for ASCII character counts, preserving case. Increment for a, decrement for b. Expected O(n+m) time.
 
 ```java
 static int isAnagram(String a, String b) {
     if (a.length() != b.length()) return 0;
-    int[] freq = new int[128];
-    for (char c : a.toCharArray()) freq[c]++;
-    for (char c : b.toCharArray()) freq[c]--;
-    for (int count : freq) if (count != 0) return 0;
+    HashMap<Character, Integer> freq = new HashMap<>();
+    for (char c : a.toCharArray())
+        freq.put(c, freq.getOrDefault(c, 0) + 1);
+    for (char c : b.toCharArray())
+        freq.put(c, freq.getOrDefault(c, 0) - 1);
+    for (var e : freq.entrySet()) {
+        if (e.getValue() != 0) return 0;
+    }
     return 1;
+}
+```
+
+**Built-in alternative — sort ASCII characters**
+
+Sorting works for spaces, digits and uppercase letters too, and preserves case sensitivity. O(n log n) time; use the HashMap version when linear time is required.
+
+```java
+static int isAnagram(String a, String b) {
+    if (a.length() != b.length()) return 0;
+    char[] x = a.toCharArray();
+    char[] y = b.toCharArray();
+    Arrays.sort(x);
+    Arrays.sort(y);
+    return Arrays.equals(x, y) ? 1 : 0;
 }
 ```
 
@@ -427,20 +569,55 @@ static String upperToLower(String str) {
 }
 ```
 
+**Basic alternative — ASCII conversion**
+
+Check each character. Add 32 only for A–Z. This uses a loop, comparisons and a cast. Repeated concatenation can take O(n²) time.
+
+```java
+static String upperToLower(String str) {
+    String ans = "";
+    for (int i = 0; i < str.length(); i++) {
+        char c = str.charAt(i);
+        if (c >= 'A' && c <= 'Z') c = (char)(c + 32);
+        ans += c;
+    }
+    return ans;
+}
+```
+
 ### 14. College Seats Are Reserved
 
 **Question:** Two arrays contain reserved seat ages and applicant ages. Every applicant must match one seat of exactly the same age. Return YES only when all frequencies match. Ages are 1–100; N can be 100000.
 
-**Solution idea:** Count seats positively and applicants negatively. O(n) time, O(1) bounded space.
+**Solution idea:** Use a HashMap: add seat-age frequencies and subtract applicant-age frequencies. All counts must be zero. Expected O(n) time; O(k) space for k distinct ages (at most 100).
 
 ```java
 static String seatsFilled(int[] a, int[] b) {
     if (a.length != b.length) return "NO";
-    int[] freq = new int[101];
-    for (int age : a) freq[age]++;
-    for (int age : b) freq[age]--;
-    for (int count : freq) if (count != 0) return "NO";
+    HashMap<Integer, Integer> freq = new HashMap<>();
+    for (int age : a)
+        freq.put(age, freq.getOrDefault(age, 0) + 1);
+    for (int age : b)
+        freq.put(age, freq.getOrDefault(age, 0) - 1);
+    for (var e : freq.entrySet()) {
+        if (e.getValue() != 0) return "NO";
+    }
     return "YES";
+}
+```
+
+**Built-in alternative — sort both age lists**
+
+Sort copies and compare them. Matching sorted arrays have the same ages with the same counts. clone() preserves the original arrays. O(n log n) time and O(n) extra space.
+
+```java
+static String seatsFilled(int[] a, int[] b) {
+    if (a.length != b.length) return "NO";
+    int[] x = a.clone();
+    int[] y = b.clone();
+    Arrays.sort(x);
+    Arrays.sort(y);
+    return Arrays.equals(x, y) ? "YES" : "NO";
 }
 ```
 
@@ -1223,7 +1400,7 @@ class DigitalOrder extends Order {
 ## Quick revision reminders
 
 - Clockwise rotation: transpose + reverse rows. Counter-clockwise: transpose + reverse columns.
-- Frequency questions: count first, then compare or scan again in original order.
+- Frequency questions: `freq.put(key, freq.getOrDefault(key, 0) + 1)` counts occurrences. Iterate map entries with `for (var e : freq.entrySet())`; `e.getKey()` is the key and `e.getValue()` is the frequency. Use TreeMap for alphabetical output. For the first unique character/index, scan the original string after counting because HashMap does not preserve order.
 - Zero-based even row indices correspond to 1-based odd row numbers.
 - `extends` inherits a class; `implements` adopts interface contracts. A Java class has one direct superclass and may implement multiple interfaces.
 - Interface methods implemented by a class must be `public`. Abstract classes can hold instance fields and constructors; interfaces have constants and may have default/static methods.
